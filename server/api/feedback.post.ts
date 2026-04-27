@@ -1,36 +1,13 @@
-import { Client } from 'pg'
+import pool from '../utils/db'
 
 export default defineEventHandler(async (event) => {
-  const connectionString = process.env.DATABASE_URL
-
-  if (!connectionString && !process.env.POSTGRES_HOST) {
-    console.error('DATABASE_URL ou POSTGRES_HOST nao configurados')
-    setResponseStatus(event, 500)
-    return {
-      success: false,
-      message: 'Configuracao do banco nao encontrada'
-    }
-  }
-
-  const client = connectionString
-    ? new Client({ connectionString })
-    : new Client({
-        host: process.env.POSTGRES_HOST || 'localhost',
-        port: Number(process.env.POSTGRES_PORT || 5432),
-        user: process.env.POSTGRES_USER || 'postgres',
-        password: process.env.POSTGRES_PASSWORD || '',
-        database: process.env.POSTGRES_DB || 'feedback_db'
-      })
-
   try {
     const body = await readBody(event)
     console.log('POST /api/feedback body:', body)
 
     const protocolo = `FB-${Date.now()}`
 
-    await client.connect()
-
-    await client.query(`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS feedbacks (
         id SERIAL PRIMARY KEY,
         tipo VARCHAR(50) NOT NULL,
@@ -47,11 +24,11 @@ export default defineEventHandler(async (event) => {
       )
     `)
 
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
 
-    await client.query(
+    await pool.query(
       `INSERT INTO feedbacks 
       (tipo, regiao, unidade, nota, descricao, nome, telefone, email, anonimo, protocolo)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
@@ -81,7 +58,5 @@ export default defineEventHandler(async (event) => {
       success: false,
       message: error instanceof Error ? error.message : 'Erro ao salvar feedback'
     }
-  } finally {
-    await client.end().catch(() => {})
   }
 })
