@@ -1,4 +1,4 @@
-import { Client } from 'pg'
+import pool from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -12,35 +12,12 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const connectionString = process.env.DATABASE_URL
-
-  if (!connectionString && !process.env.POSTGRES_HOST) {
-    console.error('DATABASE_URL ou POSTGRES_HOST nao configurados')
-    setResponseStatus(event, 500)
-    return {
-      success: false,
-      message: 'Configuracao do banco nao encontrada'
-    }
-  }
-
-  const client = connectionString
-    ? new Client({ connectionString })
-    : new Client({
-        host: process.env.POSTGRES_HOST || 'localhost',
-        port: Number(process.env.POSTGRES_PORT || 5432),
-        user: process.env.POSTGRES_USER || 'postgres',
-        password: process.env.POSTGRES_PASSWORD || '',
-        database: process.env.POSTGRES_DB || 'feedback_db'
-      })
-
   try {
-    await client.connect()
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
+    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
 
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
-    await client.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
-
-    const { rows } = await client.query(
+    const { rows } = await pool.query(
       `SELECT
         id,
         tipo,
@@ -79,7 +56,5 @@ export default defineEventHandler(async (event) => {
       success: false,
       message: error instanceof Error ? error.message : 'Erro ao consultar manifestacao'
     }
-  } finally {
-    await client.end().catch(() => {})
   }
 })
