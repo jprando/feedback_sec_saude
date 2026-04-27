@@ -9,6 +9,7 @@ const feedbackFormRef = ref<{ resetForm: () => void } | null>(null)
 
 const {
   loading,
+  copiedProtocolo,
   toast,
   protocoloModal,
   enviarFeedback,
@@ -47,6 +48,7 @@ const enviar = async (payload: FeedbackFormData) => {
     <ProtocoloModal
       :show="protocoloModal.show"
       :protocolo="protocoloModal.protocolo"
+      :copied="copiedProtocolo"
       @close="fecharModalProtocolo"
       @copy="copiarProtocolo"
     />

@@ -2,6 +2,7 @@
 const props = defineProps<{
   show: boolean
   protocolo: string
+  copied: boolean
 }>()
 
 const emit = defineEmits<{
@@ -45,8 +46,12 @@ const emit = defineEmits<{
         </div>
 
         <div class="mt-5 flex flex-col gap-3 sm:flex-row">
-          <UButton block icon="i-lucide-copy" @click="emit('copy')">
-            Copiar protocolo
+          <UButton
+            block
+            :icon="props.copied ? 'i-lucide-check' : 'i-lucide-copy'"
+            @click="emit('copy')"
+          >
+            {{ props.copied ? 'Protocolo copiado' : 'Copiar protocolo' }}
           </UButton>
           <UButton block variant="soft" color="neutral" @click="emit('close')">
             Fechar
