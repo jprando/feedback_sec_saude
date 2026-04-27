@@ -17,6 +17,8 @@ const validarTelefone = (value: string) => {
 
 export const useFeedback = () => {
   const loading = ref(false)
+  const copiedProtocolo = ref(false)
+  let copiedTimeout: ReturnType<typeof setTimeout> | null = null
   const toast = ref<ToastState>({
     show: false,
     message: '',
@@ -98,11 +100,22 @@ export const useFeedback = () => {
     if (!protocoloModal.value.protocolo || !navigator?.clipboard) return
 
     await navigator.clipboard.writeText(protocoloModal.value.protocolo)
+    copiedProtocolo.value = true
+
+    if (copiedTimeout) {
+      clearTimeout(copiedTimeout)
+    }
+
+    copiedTimeout = setTimeout(() => {
+      copiedProtocolo.value = false
+    }, 1500)
+
     showToast('Protocolo copiado.', 'success')
   }
 
   return {
     loading,
+    copiedProtocolo,
     toast,
     protocoloModal,
     enviarFeedback,
