@@ -1,7 +1,8 @@
-import pool from '../utils/db'
+import { getPool } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   try {
+    const pool = getPool()
     const body = await readBody(event)
     console.log('POST /api/feedback body:', body)
 

@@ -1,4 +1,4 @@
-import pool from '../utils/db'
+import { getPool } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    const pool = getPool()
     await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
     await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
     await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
