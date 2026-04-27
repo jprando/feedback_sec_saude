@@ -1,4 +1,8 @@
 <script setup>
+const colorMode = useColorMode()
+
+colorMode.preference = 'light'
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
