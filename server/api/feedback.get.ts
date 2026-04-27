@@ -1,4 +1,4 @@
-import { getPool } from '../utils/db'
+import { getDb } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -13,12 +13,26 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const pool = getPool()
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
+    const db = getDb(event)
 
-    const { rows } = await pool.query(
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS feedbacks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tipo TEXT NOT NULL,
+        regiao TEXT NOT NULL DEFAULT '',
+        unidade TEXT NOT NULL DEFAULT '',
+        nota INTEGER NOT NULL DEFAULT 0,
+        descricao TEXT NOT NULL,
+        nome TEXT,
+        telefone TEXT,
+        email TEXT,
+        anonimo INTEGER NOT NULL DEFAULT 0,
+        protocolo TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run()
+
+    const feedback = await db.prepare(
       `SELECT
         id,
         tipo,
@@ -33,12 +47,11 @@ export default defineEventHandler(async (event) => {
         protocolo,
         created_at
       FROM feedbacks
-      WHERE protocolo = $1
-      LIMIT 1`,
-      [protocolo]
-    )
+      WHERE protocolo = ?
+      LIMIT 1`
+    ).bind(protocolo).first<Record<string, unknown>>()
 
-    if (!rows.length) {
+    if (!feedback) {
       setResponseStatus(event, 404)
       return {
         success: false,
@@ -48,7 +61,10 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      feedback: rows[0]
+      feedback: {
+        ...feedback,
+        anonimo: Boolean(feedback.anonimo)
+      }
     }
   } catch (error) {
     console.error(error)

@@ -1,30 +1,35 @@
-import { Pool } from 'pg'
+import type { H3Event } from 'h3'
 
-type GlobalDb = typeof globalThis & {
-  __feedbackPool?: Pool
+type D1Result<T> = {
+  results: T[]
 }
 
-const getDatabaseUrl = () => {
-  const databaseUrl = process.env.DATABASE_URL?.trim()
-
-  if (!databaseUrl) {
-    throw new Error('DATABASE_URL nao configurada')
-  }
-
-  return databaseUrl
+type D1Statement = {
+  bind: (...values: unknown[]) => D1Statement
+  run: () => Promise<unknown>
+  first: <T>() => Promise<T | null>
+  all: <T>() => Promise<D1Result<T>>
 }
 
-export const getPool = () => {
-  const globalDb = globalThis as GlobalDb
+export type D1Database = {
+  prepare: (query: string) => D1Statement
+}
 
-  if (!globalDb.__feedbackPool) {
-    globalDb.__feedbackPool = new Pool({
-      connectionString: getDatabaseUrl(),
-      ssl: {
-        rejectUnauthorized: false
-      }
-    })
+type CloudflareEventContext = {
+  cloudflare?: {
+    env?: {
+      DB?: D1Database
+    }
+  }
+}
+
+export const getDb = (event: H3Event): D1Database => {
+  const context = event.context as CloudflareEventContext
+  const db = context.cloudflare?.env?.DB
+
+  if (!db) {
+    throw new Error('D1 binding DB nao configurado. Verifique o wrangler.jsonc e o deploy na Cloudflare.')
   }
 
-  return globalDb.__feedbackPool
+  return db
 }

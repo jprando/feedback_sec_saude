@@ -1,39 +1,35 @@
-import { getPool } from '../utils/db'
+import { getDb } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   try {
-    const pool = getPool()
+    const db = getDb(event)
     const body = await readBody(event)
     console.log('POST /api/feedback body:', body)
 
     const protocolo = `FB-${Date.now()}`
 
-    await pool.query(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS feedbacks (
-        id SERIAL PRIMARY KEY,
-        tipo VARCHAR(50) NOT NULL,
-        regiao VARCHAR(100) NOT NULL DEFAULT '',
-        unidade VARCHAR(255) NOT NULL DEFAULT '',
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tipo TEXT NOT NULL,
+        regiao TEXT NOT NULL DEFAULT '',
+        unidade TEXT NOT NULL DEFAULT '',
         nota INTEGER NOT NULL DEFAULT 0,
         descricao TEXT NOT NULL,
-        nome VARCHAR(255),
-        telefone VARCHAR(50),
-        email VARCHAR(255),
-        anonimo BOOLEAN NOT NULL DEFAULT FALSE,
-        protocolo VARCHAR(50) NOT NULL UNIQUE,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        nome TEXT,
+        telefone TEXT,
+        email TEXT,
+        anonimo INTEGER NOT NULL DEFAULT 0,
+        protocolo TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
-    `)
+    `).run()
 
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS regiao VARCHAR(100) NOT NULL DEFAULT ''`)
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS unidade VARCHAR(255) NOT NULL DEFAULT ''`)
-    await pool.query(`ALTER TABLE feedbacks ADD COLUMN IF NOT EXISTS nota INTEGER NOT NULL DEFAULT 0`)
-
-    await pool.query(
+    await db.prepare(
       `INSERT INTO feedbacks 
       (tipo, regiao, unidade, nota, descricao, nome, telefone, email, anonimo, protocolo)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
         body.tipo,
         body.regiao,
         body.unidade,
@@ -42,10 +38,9 @@ export default defineEventHandler(async (event) => {
         body.nome,
         body.telefone,
         body.email,
-        body.anonimo,
+        body.anonimo ? 1 : 0,
         protocolo
-      ]
-    )
+      ).run()
 
     return {
       success: true,

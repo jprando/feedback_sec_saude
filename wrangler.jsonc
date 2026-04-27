@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "feedback-posto",
+  "main": ".output/server/index.mjs",
+  "assets": {
+    "directory": ".output/public"
+  },
+  "compatibility_date": "2026-04-27",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "feedback-db",
+      "database_id": "aaf50009-6a66-4529-81eb-24f551d10355"
+    }
+  ]
+}
