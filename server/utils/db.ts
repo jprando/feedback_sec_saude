@@ -1,14 +1,30 @@
 import { Pool } from 'pg'
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL nao configurada')
+type GlobalDb = typeof globalThis & {
+  __feedbackPool?: Pool
 }
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-})
+const getDatabaseUrl = () => {
+  const databaseUrl = process.env.DATABASE_URL?.trim()
 
-export default pool
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL nao configurada')
+  }
+
+  return databaseUrl
+}
+
+export const getPool = () => {
+  const globalDb = globalThis as GlobalDb
+
+  if (!globalDb.__feedbackPool) {
+    globalDb.__feedbackPool = new Pool({
+      connectionString: getDatabaseUrl(),
+      ssl: {
+        rejectUnauthorized: false
+      }
+    })
+  }
+
+  return globalDb.__feedbackPool
+}
