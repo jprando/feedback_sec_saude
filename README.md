@@ -17,7 +17,8 @@ Ele serve como um canal digital de ouvidoria, ajudando a organizar o atendimento
 - TypeScript
 - Tailwind CSS
 - Nuxt UI
-- PostgreSQL
+- Cloudflare D1
+- Cloudflare Workers
 - Node.js
 
 ## Funcionalidades
@@ -34,7 +35,8 @@ Ele serve como um canal digital de ouvidoria, ajudando a organizar o atendimento
 
 - Node.js instalado
 - pnpm instalado
-- Docker e Docker Compose instalados
+- Conta na Cloudflare
+- Wrangler CLI (incluido nas dependencias do projeto)
 
 ### Passo a passo
 
@@ -45,14 +47,27 @@ Ele serve como um canal digital de ouvidoria, ajudando a organizar o atendimento
 pnpm install
 ```
 
-3. Crie um arquivo `.env` na raiz do projeto com base no `.env.example`.
-4. Suba a aplicacao e o banco de dados:
+3. Faca login no Wrangler:
 
 ```bash
-docker compose up --build
+pnpm exec wrangler login
 ```
 
-5. Se preferir rodar apenas a app fora do Docker, use:
+4. Crie o banco D1:
+
+```bash
+pnpm exec wrangler d1 create feedback-db
+```
+
+5. Copie o `database_id` retornado e atualize o arquivo `wrangler.jsonc`.
+
+6. Aplique o schema inicial:
+
+```bash
+pnpm exec wrangler d1 execute feedback-db --file=./db/init.sql --remote
+```
+
+7. Rode a aplicacao localmente:
 
 ```bash
 pnpm dev
@@ -60,26 +75,26 @@ pnpm dev
 
 A aplicacao ficara disponivel em `http://localhost:3000`.
 
-## Variaveis de ambiente
+8. Deploy na Cloudflare Workers:
 
-Exemplo de configuracao local:
-
-```env
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=sua_senha
-POSTGRES_DB=feedback_db
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-
-DATABASE_URL=postgresql://postgres:sua_senha@localhost:5432/feedback_db
+```bash
+pnpm deploy
 ```
 
-Se a aplicacao estiver rodando fora do Docker, `POSTGRES_HOST=localhost` costuma funcionar.
-Se o Nuxt estiver dentro de um container no mesmo `docker-compose`, use o nome do servico do banco como host.
+## Variaveis de ambiente
+
+Para o fluxo com D1 + Workers, nao e necessario configurar `DATABASE_URL`.
+
+As configuracoes do banco sao feitas por binding no `wrangler.jsonc`:
+
+- `d1_databases[].binding = "DB"`
+- `d1_databases[].database_id = "..."`
+
+Opcionalmente, para automacao CI/CD, voce pode usar variaveis como `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN`.
 
 ## Banco de dados
 
-O banco sobe com o arquivo `db/init.sql`, que cria a tabela `feedbacks` automaticamente na primeira inicializacao do container.
+O schema do banco esta em `db/init.sql` e pode ser aplicado com `wrangler d1 execute`.
 
 ## Estrutura do projeto
 
@@ -93,7 +108,7 @@ O banco sobe com o arquivo `db/init.sql`, que cria a tabela `feedbacks` automati
 
 1. O usuario acessa o formulario.
 2. Preenche a manifestacao e envia.
-3. O sistema grava os dados no PostgreSQL.
+3. O sistema grava os dados no Cloudflare D1.
 4. Um protocolo unico e gerado.
 5. O usuario pode acompanhar a manifestacao depois.
 
