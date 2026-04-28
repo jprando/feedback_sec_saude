@@ -16,17 +16,28 @@ const emit = defineEmits<{
 const router = useRouter()
 
 const form = reactive<FeedbackFormData>(getEmptyFeedbackForm())
+const submitAttempted = ref(false)
 
-const descricaoError = computed(() => {
-  if (form.descricao && form.descricao.length > 500) {
-    return 'Máximo 500 caracteres'
+const descricaoObrigatoriaError = computed(() => {
+  if (!submitAttempted.value) return ''
+  if (!form.descricao || form.descricao.trim() === '') {
+    return 'Descrição é obrigatória.'
   }
   return ''
 })
 
-const unidadeError = computed(() => {
+const unidadeObrigatoriaError = computed(() => {
+  if (!submitAttempted.value) return ''
   if (!form.regiao || !form.unidade) {
-    return 'Selecione a região e a unidade.'
+    return 'Região e unidade são obrigatórias.'
+  }
+  return ''
+})
+
+const notaObrigatoriaError = computed(() => {
+  if (!submitAttempted.value) return ''
+  if (!form.nota) {
+    return 'Nota é obrigatória.'
   }
   return ''
 })
@@ -56,18 +67,16 @@ const onPhoneKeydown = (event: KeyboardEvent) => {
 
 const canSubmit = computed(() => {
   return !props.loading
-    && !!form.descricao
-    && !descricaoError.value
-    && !unidadeError.value
-    && !!form.nota
 })
 
 const submitForm = () => {
+  submitAttempted.value = true
   emit('submit', { ...form })
 }
 
 const resetForm = () => {
   Object.assign(form, getEmptyFeedbackForm())
+  submitAttempted.value = false
 }
 
 defineExpose({ resetForm })
@@ -85,6 +94,9 @@ watch(() => form.regiao, () => {
       v-model:regiao="form.regiao"
       v-model:unidade="form.unidade"
     />
+    <p v-if="unidadeObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
+      {{ unidadeObrigatoriaError }}
+    </p>
 
     <div class="space-y-3">
       <label class="block text-sm font-semibold mb-2">
@@ -99,6 +111,9 @@ watch(() => form.regiao, () => {
       <div class="text-xs text-slate-500 mt-1">
         {{ form.descricao.length }}/500
       </div>
+      <p v-if="descricaoObrigatoriaError" class="text-xs text-red-600 dark:text-red-400">
+        {{ descricaoObrigatoriaError }}
+      </p>
     </div>
 
     <div class="flex items-center gap-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 px-4 py-3">
@@ -124,6 +139,9 @@ watch(() => form.regiao, () => {
     </div>
 
     <NotaSelector v-model="form.nota" />
+    <p v-if="notaObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
+      {{ notaObrigatoriaError }}
+    </p>
 
     <div class="flex flex-col gap-3 pt-3 sm:pt-4 pb-2 sm:pb-0">
       <UButton
