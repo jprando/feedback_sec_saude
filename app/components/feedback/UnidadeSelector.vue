@@ -23,23 +23,25 @@ const unidadesFiltradas = computed(() => {
   return regiaoAtiva.value.unidades
 })
 
+const truncateLabel = (text: string, maxLength = 58) => {
+  if (text.length <= maxLength) return text
+  return `${text.slice(0, maxLength - 1)}…`
+}
+
+const unidadeOptions = computed(() => {
+  return unidadesFiltradas.value.map(unidade => ({
+    label: truncateLabel(unidade),
+    value: unidade
+  }))
+})
+
 const onRegiaoChange = (value: string) => {
   emit('update:regiao', value)
   emit('update:unidade', '')
 }
 
-const onUnidadeChange = (event: Event) => {
-  const value = (event.target as HTMLSelectElement).value
-
-  if (!value) {
-    emit('update:regiao', '')
-    emit('update:unidade', '')
-    return
-  }
-
-  const [regiaoSelecionada, unidadeSelecionada] = value.split('::')
-  emit('update:regiao', regiaoSelecionada ?? '')
-  emit('update:unidade', unidadeSelecionada ?? '')
+const onUnidadeChange = (value: string) => {
+  emit('update:unidade', value ?? '')
 }
 </script>
 
@@ -63,24 +65,19 @@ const onUnidadeChange = (event: Event) => {
         Unidade / Local
       </label>
 
-      <select
-        :value="unidade ? `${regiao}::${unidade}` : ''"
-        class="mt-3 w-full min-h-12 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-3 text-sm shadow-sm disabled:opacity-60"
+      <USelect
+        class="mt-3 w-full"
+        :model-value="unidade"
+        :items="unidadeOptions"
+        :placeholder="regiao ? 'Selecione a unidade' : 'Escolha uma região primeiro'"
+        size="lg"
         :disabled="!regiao"
-        @change="onUnidadeChange"
-      >
-        <option value="" disabled>
-          {{ regiao ? 'Selecione a unidade' : 'Escolha uma região primeiro' }}
-        </option>
+        @update:model-value="onUnidadeChange"
+      />
 
-        <option
-          v-for="item in unidadesFiltradas"
-          :key="item"
-          :value="`${regiao}::${item}`"
-        >
-          {{ item }}
-        </option>
-      </select>
+      <p v-if="unidade" class="mt-2 text-xs text-slate-500 dark:text-slate-400 break-words">
+        {{ unidade }}
+      </p>
 
       <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
         Escolha a região acima. Depois filtre ou role a lista para encontrar a unidade.
