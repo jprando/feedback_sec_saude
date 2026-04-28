@@ -38,16 +38,26 @@ export const useFeedback = () => {
   }
 
   const validarPayload = (payload: FeedbackFormData) => {
-    if (!payload.descricao || payload.descricao.trim() === '') {
-      return 'Preencha a descrição'
+    const camposObrigatoriosFaltando: string[] = []
+
+    if (!payload.regiao) {
+      camposObrigatoriosFaltando.push('região')
     }
 
-    if (!payload.regiao || !payload.unidade) {
-      return 'Selecione a região e a unidade'
+    if (!payload.unidade) {
+      camposObrigatoriosFaltando.push('unidade')
+    }
+
+    if (!payload.descricao || payload.descricao.trim() === '') {
+      camposObrigatoriosFaltando.push('descrição')
     }
 
     if (!payload.nota) {
-      return 'Selecione uma nota de 1 a 10'
+      camposObrigatoriosFaltando.push('nota')
+    }
+
+    if (camposObrigatoriosFaltando.length > 0) {
+      return `Preencha os campos obrigatórios: ${camposObrigatoriosFaltando.join(', ')}`
     }
 
     if (!payload.anonimo && !validarTelefone(payload.telefone)) {
