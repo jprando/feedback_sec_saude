@@ -1,5 +1,11 @@
-<script setup>
+<script setup lang="ts">
 const colorMode = useColorMode()
+
+const logoSrc = computed(() => {
+  return colorMode.value === 'dark'
+    ? '/brasao_pmdm_claro.png'
+    : '/brasao_pmdm_escuro.png'
+})
 </script>
 
 <template>
@@ -7,7 +13,7 @@ const colorMode = useColorMode()
     <!-- Logo PNG -->
     <div class="flex-shrink-0">
       <img
-        :src="colorMode.isDark ? '/brasao_pmdm_claro.png' : '/brasao_pmdm_escuro.png'"
+        :src="logoSrc"
         alt="Prefeitura de Domingos Martins - Secretaria de Saúde"
         class="h-10 w-auto object-contain"
       />

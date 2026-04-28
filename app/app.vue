@@ -35,6 +35,10 @@ useSeoMeta({
         <NuxtLink to="/" class="flex-1 min-w-0">
           <AppLogo />
         </NuxtLink>
+
+        <div class="flex items-center gap-2 sm:gap-4 ml-4">
+          <UColorModeButton />
+        </div>
       </div>
     </div>
 
