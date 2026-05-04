@@ -124,6 +124,8 @@ export const useFeedback = () => {
 
     await navigator.clipboard.writeText(protocoloModal.value.protocolo)
     copiedProtocolo.value = true
+    protocoloModal.value.show = false
+    protocoloModal.value.protocolo = ''
 
     if (copiedTimeout) {
       clearTimeout(copiedTimeout)
@@ -133,7 +135,7 @@ export const useFeedback = () => {
       copiedProtocolo.value = false
     }, 1500)
 
-    showToast('Protocolo copiado.', 'success')
+    showToast('Protocolo copiado. Use Ver Status do Envio para acompanhar.', 'success')
   }
 
   return {
