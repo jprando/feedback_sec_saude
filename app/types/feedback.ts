@@ -1,9 +1,10 @@
 export type ManifestacaoTipo = 'informacao' | 'elogio' | 'sugestao' | 'reclamacao'
-export type ServicoTipo = 'medico' | 'triagem' | 'psicologo' | 'outros'
+export type ServicoTipo = 'medico' | 'recepcao' | 'ambiente' | 'odontologia' | 'farmacia' | 'enfermagem' | 'outros'
 
 export interface FeedbackFormData {
   tipo: ManifestacaoTipo
   tipoServico: ServicoTipo | ''
+  tipoServicoOutro: string
   regiao: string
   unidade: string
   nota: number
@@ -46,6 +47,7 @@ export interface ProtocoloModalState {
 export const getEmptyFeedbackForm = (): FeedbackFormData => ({
   tipo: 'informacao',
   tipoServico: '',
+  tipoServicoOutro: '',
   regiao: '',
   unidade: '',
   nota: 0,
