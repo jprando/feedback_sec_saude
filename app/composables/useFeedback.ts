@@ -44,6 +44,10 @@ export const useFeedback = () => {
       camposObrigatoriosFaltando.push('região')
     }
 
+    if (!payload.tipoServico) {
+      camposObrigatoriosFaltando.push('tipo de serviço')
+    }
+
     if (!payload.unidade) {
       camposObrigatoriosFaltando.push('unidade')
     }
