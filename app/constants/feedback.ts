@@ -80,8 +80,11 @@ export const TIPO_OPTIONS: TipoOption[] = [
 
 export const TIPO_SERVICO_OPTIONS: TipoServicoOption[] = [
   { label: 'Médico', value: 'medico' },
-  { label: 'Triagem', value: 'triagem' },
-  { label: 'Psicólogo', value: 'psicologo' },
+  { label: 'Recepção', value: 'recepcao' },
+  { label: 'Ambiente', value: 'ambiente' },
+  { label: 'Odontologia', value: 'odontologia' },
+  { label: 'Farmácia', value: 'farmacia' },
+  { label: 'Enfermagem', value: 'enfermagem' },
   { label: 'Outros', value: 'outros' }
 ]
 
