@@ -19,7 +19,7 @@ const notaClass = (nota: number) => {
 <template>
   <div class="space-y-3">
     <label class="block text-sm font-semibold mb-3">
-      Nota
+      Nota *
     </label>
     <div class="grid grid-cols-5 gap-2 sm:gap-2.5">
       <button
