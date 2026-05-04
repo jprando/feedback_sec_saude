@@ -1,4 +1,4 @@
-import type { RegiaoItem, TipoOption } from '~/types/feedback'
+import type { RegiaoItem, TipoOption, TipoServicoOption } from '~/types/feedback'
 
 export const REGIOES: RegiaoItem[] = [
   {
@@ -76,6 +76,13 @@ export const TIPO_OPTIONS: TipoOption[] = [
   { label: 'Elogio', value: 'elogio', icon: 'i-lucide-star' },
   { label: 'Sugestão', value: 'sugestao', icon: 'i-lucide-lightbulb' },
   { label: 'Reclamação', value: 'reclamacao', icon: 'i-lucide-alert-circle' }
+]
+
+export const TIPO_SERVICO_OPTIONS: TipoServicoOption[] = [
+  { label: 'Médico', value: 'medico' },
+  { label: 'Triagem', value: 'triagem' },
+  { label: 'Psicólogo', value: 'psicologo' },
+  { label: 'Outros', value: 'outros' }
 ]
 
 export const NOTA_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
