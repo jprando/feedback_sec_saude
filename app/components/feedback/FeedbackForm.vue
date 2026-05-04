@@ -40,6 +40,9 @@ const tipoServicoObrigatorioError = computed(() => {
   if (!form.tipoServico) {
     return 'Tipo de serviço é obrigatório.'
   }
+  if (form.tipoServico === 'outros' && form.tipoServicoOutro.trim() === '') {
+    return 'Informe qual é o tipo de serviço.'
+  }
   return ''
 })
 
@@ -93,6 +96,12 @@ defineExpose({ resetForm })
 watch(() => form.regiao, () => {
   form.unidade = ''
 })
+
+watch(() => form.tipoServico, (tipoServico) => {
+  if (tipoServico !== 'outros') {
+    form.tipoServicoOutro = ''
+  }
+})
 </script>
 
 <template>
@@ -109,6 +118,14 @@ watch(() => form.regiao, () => {
         placeholder="Selecione o tipo de serviço"
         size="lg"
         class="w-full"
+      />
+      <UInput
+        v-if="form.tipoServico === 'outros'"
+        v-model="form.tipoServicoOutro"
+        placeholder="Digite o tipo de serviço"
+        size="lg"
+        class="mt-3 w-full"
+        maxlength="80"
       />
       <p v-if="tipoServicoObrigatorioError" class="mt-2 text-xs text-red-600 dark:text-red-400">
         {{ tipoServicoObrigatorioError }}

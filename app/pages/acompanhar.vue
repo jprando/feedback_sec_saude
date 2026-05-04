@@ -27,8 +27,11 @@ const tipoLabel: Record<string, string> = {
 
 const tipoServicoLabel: Record<string, string> = {
   medico: 'Médico',
-  triagem: 'Triagem',
-  psicologo: 'Psicólogo',
+  recepcao: 'Recepção',
+  ambiente: 'Ambiente',
+  odontologia: 'Odontologia',
+  farmacia: 'Farmácia',
+  enfermagem: 'Enfermagem',
   outros: 'Outros'
 }
 
