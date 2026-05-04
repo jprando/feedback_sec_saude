@@ -48,6 +48,10 @@ export const useFeedback = () => {
       camposObrigatoriosFaltando.push('tipo de serviço')
     }
 
+    if (payload.tipoServico === 'outros' && payload.tipoServicoOutro.trim() === '') {
+      camposObrigatoriosFaltando.push('qual tipo de serviço')
+    }
+
     if (!payload.unidade) {
       camposObrigatoriosFaltando.push('unidade')
     }
@@ -83,7 +87,12 @@ export const useFeedback = () => {
 
       const response = await $fetch<{ success: boolean; protocolo?: string; message?: string }>('/api/feedback', {
         method: 'POST',
-        body: payload
+        body: {
+          ...payload,
+          tipoServico: payload.tipoServico === 'outros'
+            ? payload.tipoServicoOutro.trim()
+            : payload.tipoServico
+        }
       })
 
       if (response.success) {
