@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TIPO_SERVICO_OPTIONS } from '~/constants/feedback'
 import { getEmptyFeedbackForm } from '~/types/feedback'
 import TipoSelector from '~/components/feedback/TipoSelector.vue'
 import UnidadeSelector from '~/components/feedback/UnidadeSelector.vue'
@@ -30,6 +31,14 @@ const unidadeObrigatoriaError = computed(() => {
   if (!submitAttempted.value) return ''
   if (!form.regiao || !form.unidade) {
     return 'Região e unidade são obrigatórias.'
+  }
+  return ''
+})
+
+const tipoServicoObrigatorioError = computed(() => {
+  if (!submitAttempted.value) return ''
+  if (!form.tipoServico) {
+    return 'Tipo de serviço é obrigatório.'
   }
   return ''
 })
@@ -89,6 +98,22 @@ watch(() => form.regiao, () => {
 <template>
   <form @submit.prevent="submitForm" class="space-y-5 sm:space-y-6">
     <TipoSelector v-model="form.tipo" />
+
+    <div>
+      <label class="block text-sm font-semibold mb-2">
+        Tipo de serviço *
+      </label>
+      <USelect
+        v-model="form.tipoServico"
+        :items="TIPO_SERVICO_OPTIONS"
+        placeholder="Selecione o tipo de serviço"
+        size="lg"
+        class="w-full"
+      />
+      <p v-if="tipoServicoObrigatorioError" class="mt-2 text-xs text-red-600 dark:text-red-400">
+        {{ tipoServicoObrigatorioError }}
+      </p>
+    </div>
 
     <UnidadeSelector
       v-model:regiao="form.regiao"
