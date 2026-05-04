@@ -122,7 +122,7 @@ watch(() => form.tipoServico, (tipoServico) => {
       <UInput
         v-if="form.tipoServico === 'outros'"
         v-model="form.tipoServicoOutro"
-        placeholder="Digite o tipo de serviço"
+        placeholder="Digite o tipo de serviço *"
         size="lg"
         class="mt-3 w-full"
         maxlength="80"
@@ -166,18 +166,18 @@ watch(() => form.tipoServico, (tipoServico) => {
     </div>
 
     <div v-if="!form.anonimo" class="space-y-3 sm:space-y-4">
-      <UInput v-model="form.nome" placeholder="Nome" />
+      <UInput v-model="form.nome" placeholder="Nome *" />
       <UInput
         v-model="form.telefone"
         type="tel"
         inputmode="numeric"
         autocomplete="tel"
-        placeholder="Telefone"
+        placeholder="Telefone *"
         @input="onTelefoneInput"
         @keydown="onPhoneKeydown"
       />
 
-      <UInput v-model="form.email" placeholder="Email" />
+      <UInput v-model="form.email" placeholder="Email *" />
     </div>
 
     <NotaSelector v-model="form.nota" />
