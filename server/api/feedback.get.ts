@@ -1,4 +1,4 @@
-import { getDb } from '../utils/db'
+import { ensureFeedbackTable, getDb } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -15,27 +15,13 @@ export default defineEventHandler(async (event) => {
   try {
     const db = getDb(event)
 
-    await db.prepare(`
-      CREATE TABLE IF NOT EXISTS feedbacks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tipo TEXT NOT NULL,
-        regiao TEXT NOT NULL DEFAULT '',
-        unidade TEXT NOT NULL DEFAULT '',
-        nota INTEGER NOT NULL DEFAULT 0,
-        descricao TEXT NOT NULL,
-        nome TEXT,
-        telefone TEXT,
-        email TEXT,
-        anonimo INTEGER NOT NULL DEFAULT 0,
-        protocolo TEXT NOT NULL UNIQUE,
-        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-    `).run()
+    await ensureFeedbackTable(db)
 
     const feedback = await db.prepare(
       `SELECT
         id,
         tipo,
+        tipo_servico AS tipoServico,
         regiao,
         unidade,
         nota,

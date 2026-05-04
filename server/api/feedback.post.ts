@@ -1,4 +1,4 @@
-import { getDb } from '../utils/db'
+import { ensureFeedbackTable, getDb } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,29 +8,15 @@ export default defineEventHandler(async (event) => {
 
     const protocolo = `FB-${Date.now()}`
 
-    await db.prepare(`
-      CREATE TABLE IF NOT EXISTS feedbacks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tipo TEXT NOT NULL,
-        regiao TEXT NOT NULL DEFAULT '',
-        unidade TEXT NOT NULL DEFAULT '',
-        nota INTEGER NOT NULL DEFAULT 0,
-        descricao TEXT NOT NULL,
-        nome TEXT,
-        telefone TEXT,
-        email TEXT,
-        anonimo INTEGER NOT NULL DEFAULT 0,
-        protocolo TEXT NOT NULL UNIQUE,
-        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-    `).run()
+    await ensureFeedbackTable(db)
 
     await db.prepare(
       `INSERT INTO feedbacks 
-      (tipo, regiao, unidade, nota, descricao, nome, telefone, email, anonimo, protocolo)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      (tipo, tipo_servico, regiao, unidade, nota, descricao, nome, telefone, email, anonimo, protocolo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
         body.tipo,
+        body.tipoServico,
         body.regiao,
         body.unidade,
         body.nota,
