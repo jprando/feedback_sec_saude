@@ -1,7 +1,9 @@
 export type ManifestacaoTipo = 'informacao' | 'elogio' | 'sugestao' | 'reclamacao'
+export type ServicoTipo = 'medico' | 'triagem' | 'psicologo' | 'outros'
 
 export interface FeedbackFormData {
   tipo: ManifestacaoTipo
+  tipoServico: ServicoTipo | ''
   regiao: string
   unidade: string
   nota: number
@@ -23,6 +25,11 @@ export interface TipoOption {
   icon: string
 }
 
+export interface TipoServicoOption {
+  label: string
+  value: ServicoTipo
+}
+
 export type ToastType = 'success' | 'error'
 
 export interface ToastState {
@@ -38,6 +45,7 @@ export interface ProtocoloModalState {
 
 export const getEmptyFeedbackForm = (): FeedbackFormData => ({
   tipo: 'informacao',
+  tipoServico: '',
   regiao: '',
   unidade: '',
   nota: 0,
