@@ -33,3 +33,34 @@ export const getDb = (event: H3Event): D1Database => {
 
   return db
 }
+
+type TableColumn = {
+  name: string
+}
+
+export const ensureFeedbackTable = async (db: D1Database) => {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS feedbacks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo TEXT NOT NULL,
+      tipo_servico TEXT NOT NULL DEFAULT '',
+      regiao TEXT NOT NULL DEFAULT '',
+      unidade TEXT NOT NULL DEFAULT '',
+      nota INTEGER NOT NULL DEFAULT 0,
+      descricao TEXT NOT NULL,
+      nome TEXT,
+      telefone TEXT,
+      email TEXT,
+      anonimo INTEGER NOT NULL DEFAULT 0,
+      protocolo TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run()
+
+  const columns = await db.prepare('PRAGMA table_info(feedbacks)').all<TableColumn>()
+  const hasTipoServico = columns.results.some(column => column.name === 'tipo_servico')
+
+  if (!hasTipoServico) {
+    await db.prepare("ALTER TABLE feedbacks ADD COLUMN tipo_servico TEXT NOT NULL DEFAULT ''").run()
+  }
+}
