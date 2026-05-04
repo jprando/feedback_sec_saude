@@ -2,6 +2,7 @@
 type Feedback = {
   id: number
   tipo: string
+  tipoServico: string
   descricao: string
   nome: string | null
   telefone: string | null
@@ -22,6 +23,13 @@ const tipoLabel: Record<string, string> = {
   elogio: 'Elogio',
   sugestao: 'Sugestão',
   reclamacao: 'Reclamação'
+}
+
+const tipoServicoLabel: Record<string, string> = {
+  medico: 'Médico',
+  triagem: 'Triagem',
+  psicologo: 'Psicólogo',
+  outros: 'Outros'
 }
 
 const buscar = async () => {
@@ -169,6 +177,13 @@ const formatoData = computed(() => {
             <p class="text-xs uppercase tracking-wider text-slate-500">Tipo</p>
             <p class="mt-1 font-semibold">
               {{ tipoLabel[resultado.tipo] || resultado.tipo }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl bg-white/80 dark:bg-slate-900/70 p-4">
+            <p class="text-xs uppercase tracking-wider text-slate-500">Tipo de serviço</p>
+            <p class="mt-1 font-semibold">
+              {{ tipoServicoLabel[resultado.tipoServico] || resultado.tipoServico || 'Não informado' }}
             </p>
           </div>
 
