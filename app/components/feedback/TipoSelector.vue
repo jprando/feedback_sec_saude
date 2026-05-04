@@ -14,7 +14,7 @@ const emit = defineEmits<{
 <template>
   <div>
     <label class="block text-sm font-semibold mb-3">
-      Tipo de Manifestação
+      Tipo de Manifestação *
     </label>
     <div class="grid grid-cols-2 gap-3 sm:gap-4">
       <button

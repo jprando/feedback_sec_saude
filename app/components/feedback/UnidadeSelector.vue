@@ -49,7 +49,7 @@ const onUnidadeChange = (value: string) => {
   <div class="space-y-4 sm:space-y-5">
     <div>
       <label class="block text-sm font-semibold mb-2">
-        Região
+        Região *
       </label>
       <USelect
         :model-value="regiao"
@@ -62,7 +62,7 @@ const onUnidadeChange = (value: string) => {
 
     <div>
       <label class="block text-sm font-semibold mb-2">
-        Unidade / Local
+        Unidade / Local *
       </label>
 
       <USelect

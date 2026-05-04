@@ -51,7 +51,7 @@ const emit = defineEmits<{
             :icon="props.copied ? 'i-lucide-check' : 'i-lucide-copy'"
             @click="emit('copy')"
           >
-            {{ props.copied ? 'Protocolo copiado' : 'Copiar protocolo' }}
+            {{ props.copied ? 'Protocolo copiado' : 'Copiar e fechar' }}
           </UButton>
           <UButton block variant="soft" color="neutral" @click="emit('close')">
             Fechar
