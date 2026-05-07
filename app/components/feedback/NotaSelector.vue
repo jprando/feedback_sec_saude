@@ -40,5 +40,9 @@ const notaClass = (nota: number) => {
     <p class="text-xs text-slate-500 dark:text-slate-400">
       Selecione uma nota de 1 a 10 para avaliar o atendimento.
     </p>
+    <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 -mt-2 px-1">
+      <span>😞 Péssimo</span>
+      <span>Excelente 😃</span>
+    </div>
   </div>
 </template>
