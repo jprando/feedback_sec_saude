@@ -79,13 +79,13 @@ export const TIPO_OPTIONS: TipoOption[] = [
 ]
 
 export const TIPO_SERVICO_OPTIONS: TipoServicoOption[] = [
-  { label: 'Médico', value: 'medico' },
-  { label: 'Recepção', value: 'recepcao' },
-  { label: 'Ambiente', value: 'ambiente' },
-  { label: 'Odontologia', value: 'odontologia' },
-  { label: 'Farmácia', value: 'farmacia' },
-  { label: 'Enfermagem', value: 'enfermagem' },
-  { label: 'Outros', value: 'outros' }
+  { label: 'Médico', value: 'medico', icon: 'i-lucide-stethoscope' },
+  { label: 'Recepção', value: 'recepcao', icon: 'i-lucide-clipboard-list' },
+  { label: 'Ambiente', value: 'ambiente', icon: 'i-lucide-building-2' },
+  { label: 'Odontologia', value: 'odontologia', icon: 'i-lucide-smile' },
+  { label: 'Farmácia', value: 'farmacia', icon: 'i-lucide-pill' },
+  { label: 'Enfermagem', value: 'enfermagem', icon: 'i-lucide-heart-pulse' },
+  { label: 'Outros', value: 'outros', icon: 'i-lucide-more-horizontal' },
 ]
 
 export const NOTA_OPTIONS = Array.from({ length: 10 }, (_, index) => index + 1)
