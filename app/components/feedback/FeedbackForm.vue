@@ -54,6 +54,23 @@ const notaObrigatoriaError = computed(() => {
   return ''
 })
 
+const nomeObrigatorioError = computed(() => {
+  if (!submitAttempted.value || form.anonimo) return ''
+  return !form.nome.trim() ? 'Nome é obrigatório.' : ''
+})
+
+const telefoneObrigatorioError = computed(() => {
+  if (!submitAttempted.value || form.anonimo) return ''
+  return !form.telefone.trim() ? 'Telefone é obrigatório.' : ''
+})
+
+const emailInvalidoError = computed(() => {
+  if (!submitAttempted.value || form.anonimo) return ''
+  if (!form.email.trim()) return 'Email é obrigatório.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Informe um email válido.'
+  return ''
+})
+
 const formatarTelefone = (value: string) => {
   const digits = value.replace(/\D/g, '').slice(0, 11)
 
@@ -83,6 +100,16 @@ const canSubmit = computed(() => {
 
 const submitForm = () => {
   submitAttempted.value = true
+  const hasErrors = !!(
+    descricaoObrigatoriaError.value ||
+    unidadeObrigatoriaError.value ||
+    tipoServicoObrigatorioError.value ||
+    notaObrigatoriaError.value ||
+    nomeObrigatorioError.value ||
+    telefoneObrigatorioError.value ||
+    emailInvalidoError.value
+  )
+  if (hasErrors) return
   emit('submit', { ...form })
 }
 
@@ -108,17 +135,32 @@ watch(() => form.tipoServico, (tipoServico) => {
   <form @submit.prevent="submitForm" class="space-y-5 sm:space-y-6">
     <TipoSelector v-model="form.tipo" />
 
+    <NotaSelector v-model="form.nota" />
+    <p v-if="notaObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
+      {{ notaObrigatoriaError }}
+    </p>
+
     <div>
-      <label class="block text-sm font-semibold mb-2">
+      <label class="block text-sm font-semibold mb-3">
         Tipo de serviço *
       </label>
-      <USelect
-        v-model="form.tipoServico"
-        :items="TIPO_SERVICO_OPTIONS"
-        placeholder="Selecione o tipo de serviço"
-        size="lg"
-        class="w-full"
-      />
+      <div class="grid grid-cols-3 gap-2 sm:gap-3">
+        <button
+          v-for="opcao in TIPO_SERVICO_OPTIONS"
+          :key="opcao.value"
+          type="button"
+          @click="form.tipoServico = opcao.value"
+          :class="[
+            'flex flex-col items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all text-center',
+            form.tipoServico === opcao.value
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950 dark:border-blue-400'
+              : 'border-slate-200 dark:border-slate-700'
+          ]"
+        >
+          <i :class="opcao.icon" class="text-xl"></i>
+          <span class="text-xs font-medium">{{ opcao.label }}</span>
+        </button>
+      </div>
       <UInput
         v-if="form.tipoServico === 'outros'"
         v-model="form.tipoServicoOutro"
@@ -144,10 +186,11 @@ watch(() => form.tipoServico, (tipoServico) => {
       <label class="block text-sm font-semibold mb-2">
         Descrição *
       </label>
-      <textarea
+      <UTextarea
         v-model="form.descricao"
         placeholder="Descreva sua manifestação..."
-        class="w-full h-36 sm:h-32 p-4 rounded-xl border bg-white dark:bg-slate-900"
+        :rows="5"
+        class="w-full"
         maxlength="500"
       />
       <div class="text-xs text-slate-500 mt-1">
@@ -166,24 +209,33 @@ watch(() => form.tipoServico, (tipoServico) => {
     </div>
 
     <div v-if="!form.anonimo" class="space-y-3 sm:space-y-4">
-      <UInput v-model="form.nome" placeholder="Nome *" />
-      <UInput
-        v-model="form.telefone"
-        type="tel"
-        inputmode="numeric"
-        autocomplete="tel"
-        placeholder="Telefone *"
-        @input="onTelefoneInput"
-        @keydown="onPhoneKeydown"
-      />
-
-      <UInput v-model="form.email" placeholder="Email *" />
+      <div>
+        <UInput v-model="form.nome" placeholder="Nome *" />
+        <p v-if="nomeObrigatorioError" class="mt-1 text-xs text-red-600 dark:text-red-400">
+          {{ nomeObrigatorioError }}
+        </p>
+      </div>
+      <div>
+        <UInput
+          v-model="form.telefone"
+          type="tel"
+          inputmode="numeric"
+          autocomplete="tel"
+          placeholder="Telefone *"
+          @input="onTelefoneInput"
+          @keydown="onPhoneKeydown"
+        />
+        <p v-if="telefoneObrigatorioError" class="mt-1 text-xs text-red-600 dark:text-red-400">
+          {{ telefoneObrigatorioError }}
+        </p>
+      </div>
+      <div>
+        <UInput v-model="form.email" type="email" placeholder="Email *" />
+        <p v-if="emailInvalidoError" class="mt-1 text-xs text-red-600 dark:text-red-400">
+          {{ emailInvalidoError }}
+        </p>
+      </div>
     </div>
-
-    <NotaSelector v-model="form.nota" />
-    <p v-if="notaObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
-      {{ notaObrigatoriaError }}
-    </p>
 
     <div class="flex flex-col gap-3 pt-3 sm:pt-4 pb-2 sm:pb-0">
       <UButton
