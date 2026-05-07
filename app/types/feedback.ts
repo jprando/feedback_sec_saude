@@ -29,6 +29,7 @@ export interface TipoOption {
 export interface TipoServicoOption {
   label: string
   value: ServicoTipo
+  icon: string
 }
 
 export type ToastType = 'success' | 'error'
