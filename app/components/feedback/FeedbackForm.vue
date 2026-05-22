@@ -135,11 +135,6 @@ watch(() => form.tipoServico, (tipoServico) => {
   <form @submit.prevent="submitForm" class="space-y-5 sm:space-y-6">
     <TipoSelector v-model="form.tipo" />
 
-    <NotaSelector v-model="form.nota" />
-    <p v-if="notaObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
-      {{ notaObrigatoriaError }}
-    </p>
-
     <div>
       <label class="block text-sm font-semibold mb-3">
         Tipo de serviço *
@@ -236,6 +231,11 @@ watch(() => form.tipoServico, (tipoServico) => {
         </p>
       </div>
     </div>
+
+    <NotaSelector v-model="form.nota" />
+    <p v-if="notaObrigatoriaError" class="-mt-2 text-xs text-red-600 dark:text-red-400">
+      {{ notaObrigatoriaError }}
+    </p>
 
     <div class="flex flex-col gap-3 pt-3 sm:pt-4 pb-2 sm:pb-0">
       <UButton
