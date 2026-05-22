@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { NOTA_OPTIONS } from '~/constants/feedback'
 
 type NotaMood = 'critical' | 'low' | 'neutral' | 'positive' | 'excellent'
-type FaceType = 'angry' | 'sad' | 'worry' | 'flat' | 'calm' | 'happy' | 'smile' | 'bright'
+type FaceType = 'angry' | 'grimace' | 'worry' | 'frown' | 'flat' | 'calm' | 'softsmile' | 'happy' | 'bright' | 'glow'
 
 interface NotaConfig {
   nota: number
@@ -22,15 +22,15 @@ const emit = defineEmits<{
 
 const notaConfig: Record<number, NotaConfig> = {
   1: { nota: 1, face: 'angry', label: 'Extremamente insatisfeito', mood: 'critical' },
-  2: { nota: 2, face: 'sad', label: 'Muito insatisfeito', mood: 'critical' },
+  2: { nota: 2, face: 'grimace', label: 'Muito insatisfeito', mood: 'critical' },
   3: { nota: 3, face: 'worry', label: 'Insatisfeito', mood: 'low' },
-  4: { nota: 4, face: 'sad', label: 'Parcialmente insatisfeito', mood: 'low' },
+  4: { nota: 4, face: 'frown', label: 'Parcialmente insatisfeito', mood: 'low' },
   5: { nota: 5, face: 'flat', label: 'Neutro negativo', mood: 'neutral' },
   6: { nota: 6, face: 'calm', label: 'Neutro', mood: 'neutral' },
-  7: { nota: 7, face: 'smile', label: 'Levemente satisfeito', mood: 'positive' },
+  7: { nota: 7, face: 'softsmile', label: 'Levemente satisfeito', mood: 'positive' },
   8: { nota: 8, face: 'happy', label: 'Satisfeito', mood: 'positive' },
   9: { nota: 9, face: 'bright', label: 'Muito satisfeito', mood: 'excellent' },
-  10: { nota: 10, face: 'bright', label: 'Extremamente satisfeito', mood: 'excellent' }
+  10: { nota: 10, face: 'glow', label: 'Extremamente satisfeito', mood: 'excellent' }
 }
 
 const selectedConfig = computed<NotaConfig | null>(() => notaConfig[props.modelValue] ?? null)
@@ -94,17 +94,23 @@ const faceParts = (face: FaceType) => {
       brow: 'M7.8 7.2c.8-.7 1.6-1 2.4-1',
       brow2: 'M14.8 6.2c.8 0 1.6.3 2.4 1'
     },
-    sad: {
-      eyes: 'M8.1 9.6c.3.5.8.8 1.4.8s1.1-.3 1.4-.8M13.1 9.6c.3.5.8.8 1.4.8s1.1-.3 1.4-.8',
-      mouth: 'M7.8 16c1-.9 2.2-1.3 4.2-1.3s3.2.4 4.2 1.3',
-      brow: '',
-      brow2: ''
+    grimace: {
+      eyes: 'M8.2 9.4l1.1.7M15.8 9.4l-1.1.7',
+      mouth: 'M8 15.8c1.2-.7 2.4-1 4-.9s2.8.2 4 .9',
+      brow: 'M7.9 7.7c.7-.4 1.4-.6 2.2-.6',
+      brow2: 'M13.9 7.1c.8 0 1.5.2 2.2.6'
     },
     worry: {
       eyes: 'M8.2 9.2c.2.6.7 1 1.4 1s1.2-.4 1.4-1M13 9.2c.2.6.7 1 1.4 1s1.2-.4 1.4-1',
       mouth: 'M7.9 15.3c1.1-1.2 2.3-1.8 4.1-1.8s3 .6 4.1 1.8',
       brow: 'M7.8 7.4c.7-.4 1.4-.6 2.1-.6',
       brow2: 'M14.1 6.8c.7 0 1.4.2 2.1.6'
+    },
+    frown: {
+      eyes: 'M8.1 9.6c.2.4.6.6 1.1.6s.9-.2 1.1-.6M13.7 9.6c.2.4.6.6 1.1.6s.9-.2 1.1-.6',
+      mouth: 'M8 15.9c1-.8 2.2-1.1 4-.9s2.9.4 4 .9',
+      brow: '',
+      brow2: ''
     },
     flat: {
       eyes: 'M8.1 9.6h1.2M14.7 9.6h1.2',
@@ -113,28 +119,34 @@ const faceParts = (face: FaceType) => {
       brow2: ''
     },
     calm: {
-      eyes: 'M8.1 10.1c.2.5.7.8 1.3.8s1.1-.3 1.3-.8M13.3 10.1c.2.5.7.8 1.3.8s1.1-.3 1.3-.8',
-      mouth: 'M8 15c.9-.7 1.9-1 4-1s3.1.3 4 1',
+      eyes: 'M8.2 10.2h1.2M13.2 10.2h1.2',
+      mouth: 'M8.1 15c.9-.5 1.9-.7 3.9-.7s3 .2 3.9.7',
       brow: '',
       brow2: ''
+    },
+    softsmile: {
+      eyes: 'M8.2 10.1c.2.6.6 1 1.1 1s.9-.4 1.1-1M13.6 10.1c.2.6.6 1 1.1 1s.9-.4 1.1-1',
+      mouth: 'M8.2 14.8c.7.9 1.6 1.3 3.8 1.3s3.1-.4 3.8-1.3',
+      brow: 'M8 7.9c.5-.2 1-.3 1.5-.3',
+      brow2: 'M14.5 7.6c.5 0 1 .1 1.5.3'
     },
     happy: {
-      eyes: 'M8.2 10.1c.2.6.8 1 1.4 1s1.2-.4 1.4-1M13 10.1c.2.6.8 1 1.4 1s1.2-.4 1.4-1',
-      mouth: 'M8 14.4c.8 1.1 1.8 1.7 4 1.7s3.2-.6 4-1.7',
-      brow: '',
-      brow2: ''
-    },
-    smile: {
-      eyes: 'M8.2 10.1c.2.6.7.9 1.3.9s1.1-.3 1.3-.9M13.2 10.1c.2.6.7.9 1.3.9s1.1-.3 1.3-.9',
-      mouth: 'M8.1 14.1c.9 1.2 1.9 1.8 3.9 1.8s3-.6 3.9-1.8',
-      brow: '',
-      brow2: ''
+      eyes: 'M8.1 10c.3.7.8 1.1 1.4 1.1s1.1-.4 1.4-1.1M13.1 10c.3.7.8 1.1 1.4 1.1s1.1-.4 1.4-1.1',
+      mouth: 'M8 14.1c1 1.3 2.1 2 4 2s3-.7 4-2',
+      brow: 'M7.9 7.8c.6-.2 1.1-.3 1.8-.3',
+      brow2: 'M14.3 7.5c.7 0 1.2.1 1.8.3'
     },
     bright: {
-      eyes: 'M8.2 10c.2.7.8 1.2 1.5 1.2s1.3-.5 1.5-1.2M12.9 10c.2.7.8 1.2 1.5 1.2s1.3-.5 1.5-1.2',
-      mouth: 'M7.8 13.9c1 1.5 2.2 2.2 4.2 2.2s3.2-.7 4.2-2.2',
-      brow: '',
-      brow2: ''
+      eyes: 'M8 9.7c.2.8.9 1.4 1.7 1.4s1.5-.6 1.7-1.4M12.6 9.7c.2.8.9 1.4 1.7 1.4s1.5-.6 1.7-1.4',
+      mouth: 'M7.9 13.6c1.1 1.5 2.4 2.2 4.1 2.2s3-.7 4.1-2.2',
+      brow: 'M7.8 7.6c.5-.4 1.2-.6 1.9-.6',
+      brow2: 'M14.3 7c.7 0 1.4.2 1.9.6'
+    },
+    glow: {
+      eyes: 'M8 9.5c.3.9 1 1.5 1.8 1.5s1.5-.6 1.8-1.5M12.4 9.5c.3.9 1 1.5 1.8 1.5s1.5-.6 1.8-1.5',
+      mouth: 'M7.6 13.5c1.2 1.7 2.5 2.7 4.4 2.7s3.2-1 4.4-2.7',
+      brow: 'M7.7 7.4c.7-.5 1.4-.8 2.2-.8',
+      brow2: 'M14 6.6c.8 0 1.5.3 2.2.8'
     }
   } satisfies Record<FaceType, { eyes: string; mouth: string; brow: string; brow2: string }>
 
@@ -329,3 +341,9 @@ const onKeydown = (e: KeyboardEvent) => {
   transform: translateY(0) scale(1);
 }
 </style>
+    frown: {
+      eyes: 'M8.1 9.7c.3.4.8.7 1.3.7s1-.3 1.3-.7M13.3 9.7c.3.4.8.7 1.3.7s1-.3 1.3-.7',
+      mouth: 'M7.9 16.1c.9-1 2.2-1.5 4.1-1.5s3.2.5 4.1 1.5',
+      brow: '',
+      brow2: ''
+    },
