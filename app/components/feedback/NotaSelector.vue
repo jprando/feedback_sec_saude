@@ -3,10 +3,11 @@ import { computed } from 'vue'
 import { NOTA_OPTIONS } from '~/constants/feedback'
 
 type NotaMood = 'critical' | 'low' | 'neutral' | 'positive' | 'excellent'
+type FaceType = 'angry' | 'sad' | 'worry' | 'flat' | 'calm' | 'happy' | 'smile' | 'bright'
 
 interface NotaConfig {
   nota: number
-  emoji: string
+  face: FaceType
   label: string
   mood: NotaMood
 }
@@ -20,16 +21,16 @@ const emit = defineEmits<{
 }>()
 
 const notaConfig: Record<number, NotaConfig> = {
-  1: { nota: 1, emoji: '😫', label: 'Extremamente insatisfeito', mood: 'critical' },
-  2: { nota: 2, emoji: '😞', label: 'Muito insatisfeito', mood: 'critical' },
-  3: { nota: 3, emoji: '😒', label: 'Insatisfeito', mood: 'low' },
-  4: { nota: 4, emoji: '😕', label: 'Parcialmente insatisfeito', mood: 'low' },
-  5: { nota: 5, emoji: '😐', label: 'Neutro negativo', mood: 'neutral' },
-  6: { nota: 6, emoji: '🙂', label: 'Neutro', mood: 'neutral' },
-  7: { nota: 7, emoji: '🙂‍↕️', label: 'Levemente satisfeito', mood: 'positive' },
-  8: { nota: 8, emoji: '😊', label: 'Satisfeito', mood: 'positive' },
-  9: { nota: 9, emoji: '😄', label: 'Muito satisfeito', mood: 'excellent' },
-  10: { nota: 10, emoji: '🤩', label: 'Extremamente satisfeito', mood: 'excellent' }
+  1: { nota: 1, face: 'angry', label: 'Extremamente insatisfeito', mood: 'critical' },
+  2: { nota: 2, face: 'sad', label: 'Muito insatisfeito', mood: 'critical' },
+  3: { nota: 3, face: 'worry', label: 'Insatisfeito', mood: 'low' },
+  4: { nota: 4, face: 'sad', label: 'Parcialmente insatisfeito', mood: 'low' },
+  5: { nota: 5, face: 'flat', label: 'Neutro negativo', mood: 'neutral' },
+  6: { nota: 6, face: 'calm', label: 'Neutro', mood: 'neutral' },
+  7: { nota: 7, face: 'smile', label: 'Levemente satisfeito', mood: 'positive' },
+  8: { nota: 8, face: 'happy', label: 'Satisfeito', mood: 'positive' },
+  9: { nota: 9, face: 'bright', label: 'Muito satisfeito', mood: 'excellent' },
+  10: { nota: 10, face: 'bright', label: 'Extremamente satisfeito', mood: 'excellent' }
 }
 
 const selectedConfig = computed<NotaConfig | null>(() => notaConfig[props.modelValue] ?? null)
@@ -85,6 +86,61 @@ const rangeClasses: Record<NotaMood, { chip: string; active: string; idle: strin
 
 const getNotaConfig = (nota: number): NotaConfig => notaConfig[nota] ?? notaConfig[6]!
 
+const faceParts = (face: FaceType) => {
+  const palette = {
+    angry: {
+      eyes: 'M8.2 9.2l1.2 1.2M15.8 9.2l-1.2 1.2',
+      mouth: 'M7.5 15.5c1.2-1.5 2.7-2.2 4.5-2.2s3.3.7 4.5 2.2',
+      brow: 'M7.8 7.2c.8-.7 1.6-1 2.4-1',
+      brow2: 'M14.8 6.2c.8 0 1.6.3 2.4 1'
+    },
+    sad: {
+      eyes: 'M8.1 9.6c.3.5.8.8 1.4.8s1.1-.3 1.4-.8M13.1 9.6c.3.5.8.8 1.4.8s1.1-.3 1.4-.8',
+      mouth: 'M7.8 16c1-.9 2.2-1.3 4.2-1.3s3.2.4 4.2 1.3',
+      brow: '',
+      brow2: ''
+    },
+    worry: {
+      eyes: 'M8.2 9.2c.2.6.7 1 1.4 1s1.2-.4 1.4-1M13 9.2c.2.6.7 1 1.4 1s1.2-.4 1.4-1',
+      mouth: 'M7.9 15.3c1.1-1.2 2.3-1.8 4.1-1.8s3 .6 4.1 1.8',
+      brow: 'M7.8 7.4c.7-.4 1.4-.6 2.1-.6',
+      brow2: 'M14.1 6.8c.7 0 1.4.2 2.1.6'
+    },
+    flat: {
+      eyes: 'M8.1 9.6h1.2M14.7 9.6h1.2',
+      mouth: 'M7.8 14.9h8.4',
+      brow: '',
+      brow2: ''
+    },
+    calm: {
+      eyes: 'M8.1 10.1c.2.5.7.8 1.3.8s1.1-.3 1.3-.8M13.3 10.1c.2.5.7.8 1.3.8s1.1-.3 1.3-.8',
+      mouth: 'M8 15c.9-.7 1.9-1 4-1s3.1.3 4 1',
+      brow: '',
+      brow2: ''
+    },
+    happy: {
+      eyes: 'M8.2 10.1c.2.6.8 1 1.4 1s1.2-.4 1.4-1M13 10.1c.2.6.8 1 1.4 1s1.2-.4 1.4-1',
+      mouth: 'M8 14.4c.8 1.1 1.8 1.7 4 1.7s3.2-.6 4-1.7',
+      brow: '',
+      brow2: ''
+    },
+    smile: {
+      eyes: 'M8.2 10.1c.2.6.7.9 1.3.9s1.1-.3 1.3-.9M13.2 10.1c.2.6.7.9 1.3.9s1.1-.3 1.3-.9',
+      mouth: 'M8.1 14.1c.9 1.2 1.9 1.8 3.9 1.8s3-.6 3.9-1.8',
+      brow: '',
+      brow2: ''
+    },
+    bright: {
+      eyes: 'M8.2 10c.2.7.8 1.2 1.5 1.2s1.3-.5 1.5-1.2M12.9 10c.2.7.8 1.2 1.5 1.2s1.3-.5 1.5-1.2',
+      mouth: 'M7.8 13.9c1 1.5 2.2 2.2 4.2 2.2s3.2-.7 4.2-2.2',
+      brow: '',
+      brow2: ''
+    }
+  } satisfies Record<FaceType, { eyes: string; mouth: string; brow: string; brow2: string }>
+
+  return palette[face]
+}
+
 const buttonClasses = (nota: number) => {
   const config = getNotaConfig(nota)
   const isSelected = props.modelValue === nota
@@ -105,7 +161,7 @@ const emojiClasses = (nota: number) => {
   const palette = rangeClasses[config.mood]
 
   return [
-    'text-xl sm:text-2xl leading-none transition-transform duration-200 ease-out',
+    'h-8 w-8 sm:h-9 sm:w-9 transition-transform duration-200 ease-out',
     isSelected ? 'scale-110' : 'group-hover:scale-[1.06]',
     isSelected ? palette.glow : ''
   ]
@@ -149,9 +205,6 @@ const onKeydown = (e: KeyboardEvent) => {
       <label class="block text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
         Nota *
       </label>
-      <span class="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-        Ruim → Neutro → Bom
-      </span>
     </div>
 
     <div
@@ -174,9 +227,54 @@ const onKeydown = (e: KeyboardEvent) => {
         <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500/80 dark:text-slate-400/80">
           {{ nota }}
         </span>
-        <span :class="emojiClasses(nota)" aria-hidden="true">
-          {{ getNotaConfig(nota).emoji }}
-        </span>
+        <svg
+          :class="emojiClasses(nota)"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            :class="{
+              'fill-rose-100/80': getNotaConfig(nota).mood === 'critical',
+              'fill-orange-100/80': getNotaConfig(nota).mood === 'low',
+              'fill-amber-100/80': getNotaConfig(nota).mood === 'neutral',
+              'fill-emerald-100/80': getNotaConfig(nota).mood === 'positive' || getNotaConfig(nota).mood === 'excellent'
+            }"
+          />
+          <path
+            v-if="faceParts(getNotaConfig(nota).face).brow"
+            :d="faceParts(getNotaConfig(nota).face).brow"
+            :stroke="getNotaConfig(nota).mood === 'critical' ? '#C2410C' : '#6B7280'"
+            stroke-width="1.3"
+            stroke-linecap="round"
+          />
+          <path
+            v-if="faceParts(getNotaConfig(nota).face).brow2"
+            :d="faceParts(getNotaConfig(nota).face).brow2"
+            :stroke="getNotaConfig(nota).mood === 'critical' ? '#C2410C' : '#6B7280'"
+            stroke-width="1.3"
+            stroke-linecap="round"
+          />
+          <path
+            :d="faceParts(getNotaConfig(nota).face).eyes"
+            :stroke="getNotaConfig(nota).mood === 'critical' ? '#B91C1C' : getNotaConfig(nota).mood === 'low' ? '#C2410C' : getNotaConfig(nota).mood === 'neutral' ? '#B45309' : '#047857'"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <path
+            :d="faceParts(getNotaConfig(nota).face).mouth"
+            :stroke="getNotaConfig(nota).mood === 'critical' ? '#B91C1C' : getNotaConfig(nota).mood === 'low' ? '#C2410C' : getNotaConfig(nota).mood === 'neutral' ? '#B45309' : '#047857'"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+          />
+        </svg>
       </button>
     </div>
 
