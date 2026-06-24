@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "feedback-posto",
+  "name": "manifestacao",
   "main": ".output/server/index.mjs",
   "assets": {
     "directory": ".output/public"
