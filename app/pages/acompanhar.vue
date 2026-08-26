@@ -32,6 +32,7 @@ const tipoServicoLabel: Record<string, string> = {
   odontologia: 'Odontologia',
   farmacia: 'Farmácia',
   enfermagem: 'Enfermagem',
+  transporte: 'Transporte',
   outros: 'Outros'
 }
 

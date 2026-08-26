@@ -85,6 +85,7 @@ export const TIPO_SERVICO_OPTIONS: TipoServicoOption[] = [
   { label: 'Odontologia', value: 'odontologia', icon: 'i-lucide-smile' },
   { label: 'Farmácia', value: 'farmacia', icon: 'i-lucide-pill' },
   { label: 'Enfermagem', value: 'enfermagem', icon: 'i-lucide-heart-pulse' },
+  { label: 'Transporte', value: 'transporte', icon: 'i-lucide-bus' },
   { label: 'Outros', value: 'outros', icon: 'i-lucide-more-horizontal' },
 ]
 
