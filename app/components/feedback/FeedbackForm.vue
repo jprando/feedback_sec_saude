@@ -196,12 +196,7 @@ watch(() => form.tipoServico, (tipoServico) => {
       </p>
     </div>
 
-    <div class="flex items-center gap-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 px-4 py-3">
-      <UCheckbox v-model="form.anonimo" />
-      <label class="text-sm">
-        Não quero me identificar
-      </label>
-    </div>
+  
 
     <div v-if="!form.anonimo" class="space-y-3 sm:space-y-4">
       <div>
