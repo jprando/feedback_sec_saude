@@ -1,5 +1,5 @@
 export type ManifestacaoTipo = 'informacao' | 'elogio' | 'sugestao' | 'reclamacao'
-export type ServicoTipo = 'medico' | 'recepcao' | 'ambiente' | 'odontologia' | 'farmacia' | 'enfermagem' | 'outros'
+export type ServicoTipo = 'medico' | 'recepcao' | 'ambiente' | 'odontologia' | 'farmacia' | 'enfermagem' | 'transporte' | 'outros'
 
 export interface FeedbackFormData {
   tipo: ManifestacaoTipo
