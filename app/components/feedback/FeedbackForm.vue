@@ -54,46 +54,6 @@ const notaObrigatoriaError = computed(() => {
   return ''
 })
 
-const nomeObrigatorioError = computed(() => {
-  if (!submitAttempted.value || form.anonimo) return ''
-  return !form.nome.trim() ? 'Nome é obrigatório.' : ''
-})
-
-const telefoneObrigatorioError = computed(() => {
-  if (!submitAttempted.value || form.anonimo) return ''
-  return !form.telefone.trim() ? 'Telefone é obrigatório.' : ''
-})
-
-const emailInvalidoError = computed(() => {
-  if (!submitAttempted.value || form.anonimo) return ''
-  if (!form.email.trim()) return 'Email é obrigatório.'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Informe um email válido.'
-  return ''
-})
-
-const formatarTelefone = (value: string) => {
-  const digits = value.replace(/\D/g, '').slice(0, 11)
-
-  if (digits.length === 0) return ''
-  if (digits.length <= 2) return `(${digits}`
-  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 3)}${digits.slice(3, 7)}-${digits.slice(7)}`
-}
-
-const onTelefoneInput = (event: Event) => {
-  const input = event.target as HTMLInputElement
-  const formatted = formatarTelefone(input.value)
-
-  input.value = formatted
-  form.telefone = formatted
-}
-
-const onPhoneKeydown = (event: KeyboardEvent) => {
-  const allowedKeys = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End']
-  if (allowedKeys.includes(event.key)) return
-  if (!/^[0-9]$/.test(event.key)) event.preventDefault()
-}
-
 const canSubmit = computed(() => {
   return !props.loading
 })
@@ -101,13 +61,10 @@ const canSubmit = computed(() => {
 const submitForm = () => {
   submitAttempted.value = true
   const hasErrors = !!(
-    descricaoObrigatoriaError.value ||
-    unidadeObrigatoriaError.value ||
-    tipoServicoObrigatorioError.value ||
-    notaObrigatoriaError.value ||
-    nomeObrigatorioError.value ||
-    telefoneObrigatorioError.value ||
-    emailInvalidoError.value
+    descricaoObrigatoriaError.value
+    || unidadeObrigatoriaError.value
+    || tipoServicoObrigatorioError.value
+    || notaObrigatoriaError.value
   )
   if (hasErrors) return
   emit('submit', { ...form })
@@ -194,37 +151,6 @@ watch(() => form.tipoServico, (tipoServico) => {
       <p v-if="descricaoObrigatoriaError" class="text-xs text-red-600 dark:text-red-400">
         {{ descricaoObrigatoriaError }}
       </p>
-    </div>
-
-  
-
-    <div v-if="!form.anonimo" class="space-y-3 sm:space-y-4">
-      <div>
-        <UInput v-model="form.nome" placeholder="Nome *" />
-        <p v-if="nomeObrigatorioError" class="mt-1 text-xs text-red-600 dark:text-red-400">
-          {{ nomeObrigatorioError }}
-        </p>
-      </div>
-      <div>
-        <UInput
-          v-model="form.telefone"
-          type="tel"
-          inputmode="numeric"
-          autocomplete="tel"
-          placeholder="Telefone *"
-          @input="onTelefoneInput"
-          @keydown="onPhoneKeydown"
-        />
-        <p v-if="telefoneObrigatorioError" class="mt-1 text-xs text-red-600 dark:text-red-400">
-          {{ telefoneObrigatorioError }}
-        </p>
-      </div>
-      <div>
-        <UInput v-model="form.email" type="email" placeholder="Email *" />
-        <p v-if="emailInvalidoError" class="mt-1 text-xs text-red-600 dark:text-red-400">
-          {{ emailInvalidoError }}
-        </p>
-      </div>
     </div>
 
     <NotaSelector v-model="form.nota" />
