@@ -15,24 +15,23 @@ export default defineEventHandler(async (event) => {
       (tipo, tipo_servico, regiao, unidade, nota, descricao, nome, telefone, email, anonimo, protocolo)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
-        body.tipo,
-        body.tipoServico,
-        body.regiao,
-        body.unidade,
-        body.nota,
-        body.descricao,
-        body.nome,
-        body.telefone,
-        body.email,
-        body.anonimo ? 1 : 0,
-        protocolo
-      ).run()
+      body.tipo,
+      body.tipoServico,
+      body.regiao,
+      body.unidade,
+      body.nota,
+      body.descricao,
+      body.nome ?? null,
+      body.telefone ?? null,
+      body.email ?? null,
+      body.anonimo ? 1 : 0,
+      protocolo
+    ).run()
 
     return {
       success: true,
       protocolo
     }
-
   } catch (error) {
     console.error(error)
     setResponseStatus(event, 500)

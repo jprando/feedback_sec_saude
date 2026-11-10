@@ -5,16 +5,6 @@ import type {
   ToastType
 } from '~/types/feedback'
 
-const formatarTelefone = (value: string) => {
-  const digits = value.replace(/\D/g, '')
-  return digits
-}
-
-const validarTelefone = (value: string) => {
-  const digits = formatarTelefone(value)
-  return digits.length === 11 && digits[2] === '9'
-}
-
 export const useFeedback = () => {
   const loading = ref(false)
   const copiedProtocolo = ref(false)
@@ -66,10 +56,6 @@ export const useFeedback = () => {
 
     if (camposObrigatoriosFaltando.length > 0) {
       return `Preencha os campos obrigatórios: ${camposObrigatoriosFaltando.join(', ')}`
-    }
-
-    if (!payload.anonimo && !validarTelefone(payload.telefone)) {
-      return 'Telefone inválido. Use um celular brasileiro no formato (XX) 9XXXX-XXXX'
     }
 
     return null

@@ -9,9 +9,6 @@ export interface FeedbackFormData {
   unidade: string
   nota: number
   descricao: string
-  nome: string
-  telefone: string
-  email: string
   anonimo: boolean
 }
 
@@ -53,8 +50,5 @@ export const getEmptyFeedbackForm = (): FeedbackFormData => ({
   unidade: '',
   nota: 0,
   descricao: '',
-  nome: '',
-  telefone: '',
-  email: '',
-  anonimo: false
+  anonimo: true
 })
